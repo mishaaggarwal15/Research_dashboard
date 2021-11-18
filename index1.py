@@ -5,7 +5,7 @@ import pandas as pd
 import plotly.graph_objs as go
 from dash.dependencies import Input, Output
 
-app = dash.Dash(__name__)
+app = dash.Dash()
 
 app.layout = html.Div([
     html.Label('choose a department'),
