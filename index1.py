@@ -8,25 +8,26 @@ from dash.dependencies import Input, Output
 app = dash.Dash()
 
 app.layout = html.Div([
-    html.Label('choose a department'),
+    # html.Label('choose a department'),
     dcc.Dropdown(
         id = 'first-dropdown',
         options = [
-            {'label':'Computer', 'value' : '1'},
+            {'label':'CSED', 'value' : '0'},
+            {'label':'CSED_derabassi', 'value' : '1'},
             {'label':'Chemical', 'value' : '2' },
-            {'label':'Civil', 'value' : '3'},
-            {'label':'ENC', 'value' : '4' },
-            {'label':'ECE', 'value' : '5'},
+            {'label':'EIC', 'value' : '3'},
+            {'label':'ECE', 'value' : '4' },
+            {'label':'Mechanical', 'value' : '5'},
             {'label':'Biotech', 'value' : '6' },
-            {'label':'Mechanical', 'value' : '7'},
-            {'label':'Mechatronics', 'value' : '8' },
-            {'label':'CSED_derabassi', 'value' : '9'},
+            {'label':'Civil', 'value' : '7'},
+            {'label':'Distant_Edu', 'value' : '8' },
+            
         ],
         #disabled = True
-        placeholder = 'select a department',
-        value = 'CSED'
+        placeholder = 'Select a Department',
+        value = '0'
             ),
-    html.Div(id='dd-output-container')
+    html.Div(id='dd-output-container'),
     # ),
     
     # html.Br(),
@@ -36,10 +37,10 @@ app.layout = html.Div([
     # dcc.Slider(
     #     min = 1,
     #     max = 10,
-    #     value =5,
+    #     value = 5,
     #     step = .5,
-    #     marks = {i: i for i in range(10)}
-    #     ),
+    #     marks = {i: i for i in range(1, 10)}
+    # ),
     
     # html.Br(),
     # html.Br(),
@@ -74,27 +75,20 @@ app.layout = html.Div([
     # )
  ])
 
-
-# app.layout = html.Div([
-#     dcc.Dropdown(
-#         id='demo-dropdown',
-#         options=[
-#             {'label': 'New York City', 'value': 'NYC'},
-#             {'label': 'Montreal', 'value': 'MTL'},
-#             {'label': 'San Francisco', 'value': 'SF'}
-#         ],
-#         value='NYC'
-#     ),
-#     html.Div(id='dd-output-container')
-# ])
-
-
 @app.callback(
     Output('dd-output-container', 'children'),
-    Input('demo-dropdown', 'value')
+    Input('first-dropdown', 'value')
 )
 def update_output(value):
-    return 'You have selected "{}"'.format(value)
+    dept = ['CSED', 'CSED_derabassi', 'Chemical', 'EIC', 'ECE', 'Mechanical', 'Biotech', 'Civil', 'Distant_Edu']
+    extension = '.csv'
+    filename = value + extension
+
+    df = pd.read_csv('final_data/{}'.format(filename))
+    sum = df['count'].sum()
+
+    return 'The Department {} has published {} research papers.'.format(dept[int(value)], sum)
+    
 
 if __name__ == '__main__':
-    app.run_server(port = 4050)
+    app.run_server(debug=True)
